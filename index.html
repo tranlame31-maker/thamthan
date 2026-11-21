@@ -27,18 +27,31 @@
             box-shadow: 0 3px 10px rgba(0,0,0,0.18);
             border-bottom: 4px solid #eab308;
         }
-        .emblem {
-            width: 52px;
-            height: 52px;
+        .header-logo-wrap {
+            width: 68px;
+            height: 68px;
+            margin: 0 auto 8px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-logo-img {
+            width: 68px;
+            height: 68px;
+            object-fit: contain;
+            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.28));
+        }
+        .emblem-fallback {
+            width: 54px;
+            height: 54px;
             background: #dc2626;
             color: #fde047;
             border: 2.5px solid #eab308;
             border-radius: 50%;
-            display: inline-flex;
+            display: none;
             align-items: center;
             justify-content: center;
             font-size: 26px;
-            margin-bottom: 8px;
         }
         header h1 { margin: 0; font-size: 18px; text-transform: uppercase; letter-spacing: 0.5px; }
         header p { margin: 4px 0 0 0; font-size: 13px; opacity: 0.92; }
@@ -178,7 +191,10 @@
 <body>
 
 <header>
-    <div class="emblem">★</div>
+    <div class="header-logo-wrap">
+        <img src="logo.png" alt="Logo Trung đoàn 31" class="header-logo-img" onerror="this.style.display='none'; document.getElementById('fallback-emblem').style.display='inline-flex';">
+        <div id="fallback-emblem" class="emblem-fallback">★</div>
+    </div>
     <h1>ĐĂNG KÝ THĂM THÂN ĐIỆN TỬ</h1>
     <p>Trung đoàn 31 — Khai báo thông tin & Tạo mã QR vào cổng</p>
 </header>
