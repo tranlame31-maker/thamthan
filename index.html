@@ -27,7 +27,7 @@
         .form-group { margin-bottom: 12px; display: flex; flex-direction: column; }
         .form-group label { font-size: 12.5px; font-weight: 600; margin-bottom: 4px; color: #334155; }
         .form-group label span.req { color: var(--danger); }
-        .form-group input, .form-group select, .form-group textarea {
+        .form-group input, .form-group select {
             padding: 10px 12px;
             border: 1px solid var(--border);
             border-radius: 8px;
@@ -37,11 +37,25 @@
         }
         .form-group input:focus, .form-group select:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(27,67,50,0.15); }
 
-        .btn { width: 100%; padding: 13px; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
+        .btn { width: 100%; padding: 13px; border: none; border-radius: 8px; font-size: 14.5px; font-weight: 700; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
         .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; box-shadow: 0 4px 10px rgba(27,67,50,0.3); }
+        .btn-copy { background: #d97706; color: white; margin-top: 8px; }
+        .btn-reset { background: #e2e8f0; color: #334155; margin-top: 8px; font-size: 13px; padding: 10px; }
 
         #qr-result-box { display: none; text-align: center; margin-top: 16px; padding: 16px; background: #f0fdf4; border: 2px dashed var(--success); border-radius: 10px; }
-        .serial-tag { font-size: 18px; font-weight: 800; color: #b45309; background: #fef3c7; padding: 6px 14px; border-radius: 6px; display: inline-block; margin: 8px 0; border: 1px dashed #f59e0b; }
+        .code-preview {
+            width: 100%;
+            height: 68px;
+            font-size: 11px;
+            font-family: monospace;
+            padding: 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background: #fff;
+            color: #334155;
+            resize: none;
+            margin-top: 8px;
+        }
         
         #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 10px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; display: none; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); width: 90%; max-width: 400px; text-align: center; }
     </style>
@@ -50,7 +64,7 @@
 
 <div class="container">
     <div class="header">
-        <h2>PHIẾU ĐĂNG KÝ THĂM THÂN</h2>
+        <h2>PHIẾU ĐĂNG KÝ THĂM THÂN ĐIỆN TỬ</h2>
         <p>TRUNG ĐOÀN 31 — CỔNG KIỂM SOÁT TRỰC BAN</p>
     </div>
 
@@ -162,19 +176,20 @@
             <input type="text" id="reg_tn_note" placeholder="VD: Gửi đồ ăn, thuốc men...">
         </div>
 
-        <button type="submit" class="btn btn-primary">📱 TẠO MÃ QR ĐỂ VÀO CỔNG</button>
+        <button type="submit" class="btn btn-primary">📱 TẠO MÃ QR & MÃ XÁC NHẬN VÀO CỔNG</button>
     </form>
 
     <div id="qr-result-box">
-        <div style="font-size:13px; font-weight:700; color:var(--success);">🎉 ĐÃ TẠO MÃ QR THÀNH CÔNG!</div>
-        <div style="font-size:12px; color:#475569; margin-top:4px;">Đưa mã này cho đồng chí Trực ban Cổng gác quét:</div>
-        <div class="serial-tag" id="display-serial">E31-0000</div>
+        <div style="font-size:14px; font-weight:700; color:var(--success);">🎉 ĐÃ TẠO PHIẾU ĐĂNG KÝ THÀNH CÔNG!</div>
+        <div style="font-size:12px; color:#475569; margin-top:4px;">Cách 1: Đưa mã QR này cho Trực ban Cổng gác quét:</div>
         <div style="background:white; padding:12px; border:2px dashed #059669; border-radius:8px; display:inline-block; margin:8px 0;">
-            <canvas id="visitor-qr-canvas" width="200" height="200"></canvas>
+            <canvas id="visitor-qr-canvas" width="210" height="210"></canvas>
         </div>
-        <div style="font-size:12px; font-weight:600; color:#b45309; margin-top:4px;">
-            ⚠️ Vui lòng chụp màn hình hoặc đưa mã QR này cho Trực ban!
-        </div>
+        
+        <div style="font-size:12px; color:#475569; margin-top:6px; font-weight:600;">Cách 2: Nếu cổng không có máy quét, bấm sao chép mã dưới gửi Zalo cho Trực ban:</div>
+        <textarea id="full-code-output" class="code-preview" readonly></textarea>
+        <button type="button" class="btn btn-copy" onclick="copyFullCode()">📋 SAO CHÉP MÃ GỬI TRỰC BAN</button>
+        <button type="button" class="btn btn-reset" onclick="editFormAgain()">✏️ Sửa lại thông tin</button>
     </div>
 </div>
 
@@ -193,31 +208,32 @@
         const serial = 'E31-' + Math.floor(1000 + Math.random() * 9000);
         
         const payload = {
-            serial: serial,
-            qn_name: document.getElementById('reg_qn_name').value.trim(),
-            qn_rank: document.getElementById('reg_qn_rank').value,
-            qn_pos: document.getElementById('reg_qn_pos').value,
-            qn_a: document.getElementById('reg_qn_a').value.trim(),
-            qn_b: document.getElementById('reg_qn_b').value.trim(),
-            qn_c: document.getElementById('reg_qn_c').value.trim(),
-            qn_d: document.getElementById('reg_qn_d').value.trim(),
-            qn_e: 'Trung đoàn 31',
-            tn_name: document.getElementById('reg_tn_name').value.trim(),
-            tn_cccd: document.getElementById('reg_tn_cccd').value.trim(),
-            tn_rel: document.getElementById('reg_tn_rel').value,
-            tn_phone: document.getElementById('reg_tn_phone').value.trim(),
-            tn_addr: document.getElementById('reg_tn_addr').value.trim(),
-            tn_count: document.getElementById('reg_tn_count').value,
-            tn_vehicle: document.getElementById('reg_tn_vehicle').value,
-            tn_plate: document.getElementById('reg_tn_plate').value.trim(),
-            tn_note: document.getElementById('reg_tn_note').value.trim()
+            s: serial,
+            qn: document.getElementById('reg_qn_name').value.trim(),
+            r: document.getElementById('reg_qn_rank').value,
+            p: document.getElementById('reg_qn_pos').value,
+            a: document.getElementById('reg_qn_a').value.trim(),
+            b: document.getElementById('reg_qn_b').value.trim(),
+            c: document.getElementById('reg_qn_c').value.trim(),
+            d: document.getElementById('reg_qn_d').value.trim(),
+            tn: document.getElementById('reg_tn_name').value.trim(),
+            cccd: document.getElementById('reg_tn_cccd').value.trim(),
+            rel: document.getElementById('reg_tn_rel').value,
+            phone: document.getElementById('reg_tn_phone').value.trim(),
+            addr: document.getElementById('reg_tn_addr').value.trim(),
+            cnt: document.getElementById('reg_tn_count').value,
+            veh: document.getElementById('reg_tn_vehicle').value,
+            plate: document.getElementById('reg_tn_plate').value.trim(),
+            note: document.getElementById('reg_tn_note').value.trim()
         };
 
         const jsonStr = JSON.stringify(payload);
-        const b64 = btoa(unescape(encodeURIComponent(jsonStr)));
-        const finalString = "TTVN:" + b64;
+        const bytes = new TextEncoder().encode(jsonStr);
+        let binString = "";
+        for (let i = 0; i < bytes.length; i++) binString += String.fromCharCode(bytes[i]);
+        const finalString = "TTVN:" + btoa(binString);
 
-        document.getElementById('display-serial').textContent = serial;
+        document.getElementById('full-code-output').value = finalString;
         document.getElementById('qr-result-box').style.display = 'block';
 
         const canvas = document.getElementById('visitor-qr-canvas');
@@ -231,10 +247,27 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         };
-        img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=6&data=${encodeURIComponent(finalString)}`;
+        img.src = `https://api.qrserver.com/v1/create-qr-code/?size=210x210&margin=6&data=${encodeURIComponent(finalString)}`;
 
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-        showToast("✅ Đã tạo mã QR đăng ký thành công!");
+        showToast("✅ Đã tạo mã đăng ký thành công!");
+    }
+
+    function copyFullCode() {
+        const box = document.getElementById('full-code-output');
+        box.select();
+        box.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(box.value).then(() => {
+            showToast("📋 Đã sao chép mã! Hãy dán gửi cho Trực ban.");
+        }).catch(() => {
+            document.execCommand("copy");
+            showToast("📋 Đã sao chép mã!");
+        });
+    }
+
+    function editFormAgain() {
+        document.getElementById('qr-result-box').style.display = 'none';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 </script>
 
