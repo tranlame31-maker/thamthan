@@ -11,53 +11,46 @@
             --accent: #d97706;
             --danger: #dc2626;
             --success: #16a34a;
-            --bg: #f8fafc;
+            --bg: #f1f5f9;
             --card: #ffffff;
             --text: #1e293b;
             --border: #cbd5e1;
         }
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { margin: 0; background: var(--bg); color: var(--text); padding: 12px; }
-        .container { max-width: 600px; margin: 0 auto; background: var(--card); border-radius: 12px; padding: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-top: 5px solid var(--primary); }
-        .header { text-align: center; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
-        .header h2 { margin: 6px 0 2px 0; font-size: 17px; color: var(--primary); text-transform: uppercase; }
-        .header p { margin: 0; font-size: 12.5px; color: #475569; font-weight: 600; }
+        body { margin: 0; background: var(--bg); color: var(--text); padding: 20px; }
+        .container { max-width: 750px; margin: 0 auto; background: var(--card); border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border-top: 6px solid var(--primary); }
+        .header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+        .header h2 { margin: 6px 0 4px 0; font-size: 20px; color: var(--primary); text-transform: uppercase; }
+        .header p { margin: 0; font-size: 13.5px; color: #475569; font-weight: 600; }
         
-        .section-title { font-size: 13.5px; font-weight: 700; color: var(--primary-light); margin: 16px 0 10px 0; border-left: 4px solid var(--accent); padding-left: 8px; text-transform: uppercase; }
-        .form-group { margin-bottom: 12px; display: flex; flex-direction: column; }
-        .form-group label { font-size: 12.5px; font-weight: 600; margin-bottom: 4px; color: #334155; }
+        .section-title { font-size: 14.5px; font-weight: 700; color: var(--primary-light); margin: 20px 0 12px 0; border-left: 4px solid var(--accent); padding-left: 8px; text-transform: uppercase; }
+        
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 14px; }
+        .unit-grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 16px; }
+        @media (max-width: 700px) { .unit-grid-5 { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); } }
+
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #334155; }
         .form-group label span.req { color: var(--danger); }
         .form-group input, .form-group select {
             padding: 10px 12px;
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 14px;
             background: #fff;
-            width: 100%;
+            height: 40px;
         }
         .form-group input:focus, .form-group select:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(27,67,50,0.15); }
 
-        .btn { width: 100%; padding: 13px; border: none; border-radius: 8px; font-size: 14.5px; font-weight: 700; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
-        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; box-shadow: 0 4px 10px rgba(27,67,50,0.3); }
-        .btn-copy { background: #d97706; color: white; margin-top: 8px; }
-        .btn-reset { background: #e2e8f0; color: #334155; margin-top: 8px; font-size: 13px; padding: 10px; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; box-shadow: 0 4px 12px rgba(27,67,50,0.3); }
+        .btn-copy { background: #d97706; color: white; margin-top: 10px; }
+        .btn-reset { background: #e2e8f0; color: #334155; margin-top: 8px; font-size: 13.5px; padding: 10px; }
 
-        #qr-result-box { display: none; text-align: center; margin-top: 16px; padding: 16px; background: #f0fdf4; border: 2px dashed var(--success); border-radius: 10px; }
-        .code-preview {
-            width: 100%;
-            height: 76px;
-            font-size: 11px;
-            font-family: monospace;
-            padding: 8px;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            background: #fff;
-            color: #334155;
-            resize: none;
-            margin-top: 8px;
-        }
+        #qr-result-box { display: none; text-align: center; margin-top: 20px; padding: 20px; background: #f0fdf4; border: 2px dashed var(--success); border-radius: 10px; }
+        .code-preview { width: 100%; height: 80px; font-size: 11px; font-family: monospace; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; background: #fff; color: #334155; resize: none; margin-top: 8px; }
         
-        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 10px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; display: none; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); width: 90%; max-width: 400px; text-align: center; }
+        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; display: none; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); width: 90%; max-width: 420px; text-align: center; }
     </style>
 </head>
 <body>
@@ -71,36 +64,38 @@
     <form id="visitor-reg-form" onsubmit="generateQRCode(event)">
         <div class="section-title">A. Thông tin quân nhân được thăm</div>
         
-        <div class="form-group">
-            <label>Họ và tên Quân nhân <span class="req">*</span></label>
-            <input type="text" id="reg_qn_name" required placeholder="VD: Nguyễn Văn A">
-        </div>
-        <div class="form-group">
-            <label>Cấp bậc <span class="req">*</span></label>
-            <select id="reg_qn_rank" required>
-                <option value="" disabled selected>-- Chọn cấp bậc --</option>
-                <option value="Binh nhì">Binh nhì</option>
-                <option value="Binh nhất">Binh nhất</option>
-                <option value="Hạ sĩ">Hạ sĩ</option>
-                <option value="Trung sĩ">Trung sĩ</option>
-                <option value="Thượng sĩ">Thượng sĩ</option>
-                <option value="Khác">Khác</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Chức vụ <span class="req">*</span></label>
-            <select id="reg_qn_pos" required>
-                <option value="" disabled selected>-- Chọn chức vụ --</option>
-                <option value="Chiến sĩ">Chiến sĩ</option>
-                <option value="Tiểu đội trưởng">Tiểu đội trưởng</option>
-                <option value="Khẩu đội trưởng">Khẩu đội trưởng</option>
-                <option value="Y tá">Y tá</option>
-                <option value="Khác">Khác</option>
-            </select>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Họ và tên Quân nhân <span class="req">*</span></label>
+                <input type="text" id="reg_qn_name" required placeholder="VD: Nguyễn Văn A">
+            </div>
+            <div class="form-group">
+                <label>Cấp bậc <span class="req">*</span></label>
+                <select id="reg_qn_rank" required>
+                    <option value="" disabled selected>-- Chọn cấp bậc --</option>
+                    <option value="Binh nhì">Binh nhì</option>
+                    <option value="Binh nhất">Binh nhất</option>
+                    <option value="Hạ sĩ">Hạ sĩ</option>
+                    <option value="Trung sĩ">Trung sĩ</option>
+                    <option value="Thượng sĩ">Thượng sĩ</option>
+                    <option value="Khác">Khác</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Chức vụ <span class="req">*</span></label>
+                <select id="reg_qn_pos" required>
+                    <option value="" disabled selected>-- Chọn chức vụ --</option>
+                    <option value="Chiến sĩ">Chiến sĩ</option>
+                    <option value="Tiểu đội trưởng">Tiểu đội trưởng</option>
+                    <option value="Khẩu đội trưởng">Khẩu đội trưởng</option>
+                    <option value="Y tá">Y tá</option>
+                    <option value="Khác">Khác</option>
+                </select>
+            </div>
         </div>
 
-        <div style="font-size: 12.5px; font-weight: 700; color: #334155; margin: 10px 0 4px 0;">Đơn vị công tác của quân nhân:</div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <div style="font-size: 13px; font-weight: 700; color: #334155; margin: 12px 0 6px 0;">Đơn vị công tác <span style="font-weight: 400; color: #64748b;">(Điền các cấp đơn vị tương ứng):</span></div>
+        <div class="unit-grid-5">
             <div class="form-group">
                 <label>Tiểu đội (a)</label>
                 <input type="text" id="reg_qn_a" placeholder="VD: Tiểu đội 1">
@@ -117,61 +112,67 @@
                 <label>Tiểu đoàn (d)</label>
                 <input type="text" id="reg_qn_d" placeholder="VD: Tiểu đoàn 8">
             </div>
-        </div>
-        <div class="form-group">
-            <label>Trung đoàn (e)</label>
-            <input type="text" id="reg_qn_e" value="Trung đoàn 31" readonly style="background:#e2e8f0; font-weight:700;">
+            <div class="form-group">
+                <label>Trung đoàn (e)</label>
+                <input type="text" id="reg_qn_e" value="Trung đoàn 31" readonly style="background:#e2e8f0; font-weight:700;">
+            </div>
         </div>
 
         <div class="section-title">B. Thông tin thân nhân đến thăm</div>
         
-        <div class="form-group">
-            <label>Họ và tên Thân nhân đại diện <span class="req">*</span></label>
-            <input type="text" id="reg_tn_name" required placeholder="VD: Trần Thị B">
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Họ và tên Thân nhân đại diện <span class="req">*</span></label>
+                <input type="text" id="reg_tn_name" required placeholder="VD: Trần Thị B">
+            </div>
+            <div class="form-group">
+                <label>Số CCCD / CMND <span class="req">*</span></label>
+                <input type="text" id="reg_tn_cccd" required placeholder="Nhập số CCCD (12 chữ số)">
+            </div>
+            <div class="form-group">
+                <label>Mối quan hệ với Quân nhân <span class="req">*</span></label>
+                <select id="reg_tn_rel" required>
+                    <option value="" disabled selected>-- Chọn mối quan hệ --</option>
+                    <option value="Bố / Mẹ">Bố / Mẹ</option>
+                    <option value="Vợ / Con">Vợ / Con</option>
+                    <option value="Anh / Chị / Em">Anh / Chị / Em</option>
+                    <option value="Người yêu">Người yêu</option>
+                    <option value="Ông / Bà / Họ hàng">Ông / Bà / Họ hàng</option>
+                    <option value="Bạn bè">Bạn bè</option>
+                    <option value="Khác">Khác</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Số điện thoại liên hệ <span class="req">*</span></label>
+                <input type="tel" id="reg_tn_phone" required placeholder="VD: 0912345678">
+            </div>
         </div>
-        <div class="form-group">
-            <label>Số CCCD / CMND <span class="req">*</span></label>
-            <input type="text" id="reg_tn_cccd" required placeholder="Nhập số CCCD (12 chữ số)">
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Nơi cư trú (Phường/Xã, Tỉnh/TP) <span class="req">*</span></label>
+                <input type="text" id="reg_tn_addr" required placeholder="VD: Phường Tân Sơn Nhì, TP. HCM">
+            </div>
+            <div class="form-group">
+                <label>Số lượng người đi cùng <span class="req">*</span></label>
+                <input type="number" id="reg_tn_count" min="1" max="50" value="1" required>
+            </div>
+            <div class="form-group">
+                <label>Phương tiện <span class="req">*</span></label>
+                <select id="reg_tn_vehicle" required>
+                    <option value="Xe máy">Xe máy</option>
+                    <option value="Xe ô tô">Xe ô tô</option>
+                    <option value="Đi bộ">Đi bộ</option>
+                    <option value="Khác">Khác</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Biển số xe (Nếu đi xe)</label>
+                <input type="text" id="reg_tn_plate" placeholder="VD: 60B1 - 123.45">
+            </div>
         </div>
-        <div class="form-group">
-            <label>Mối quan hệ với Quân nhân <span class="req">*</span></label>
-            <select id="reg_tn_rel" required>
-                <option value="" disabled selected>-- Chọn mối quan hệ --</option>
-                <option value="Bố / Mẹ">Bố / Mẹ</option>
-                <option value="Vợ / Con">Vợ / Con</option>
-                <option value="Anh / Chị / Em">Anh / Chị / Em</option>
-                <option value="Người yêu">Người yêu</option>
-                <option value="Ông / Bà / Họ hàng">Ông / Bà / Họ hàng</option>
-                <option value="Bạn bè">Bạn bè</option>
-                <option value="Khác">Khác</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Số điện thoại liên hệ <span class="req">*</span></label>
-            <input type="tel" id="reg_tn_phone" required placeholder="VD: 0912345678">
-        </div>
-        <div class="form-group">
-            <label>Nơi cư trú (Phường/Xã, Tỉnh/TP) <span class="req">*</span></label>
-            <input type="text" id="reg_tn_addr" required placeholder="VD: Phường Tân Sơn Nhì, TP. HCM">
-        </div>
-        <div class="form-group">
-            <label>Số lượng người đi cùng (Tính cả người đại diện) <span class="req">*</span></label>
-            <input type="number" id="reg_tn_count" min="1" max="50" value="1" required>
-        </div>
-        <div class="form-group">
-            <label>Phương tiện <span class="req">*</span></label>
-            <select id="reg_tn_vehicle" required>
-                <option value="Xe máy">Xe máy</option>
-                <option value="Xe ô tô">Xe ô tô</option>
-                <option value="Đi bộ">Đi bộ</option>
-                <option value="Khác">Khác</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Biển số xe (Nếu đi xe)</label>
-            <input type="text" id="reg_tn_plate" placeholder="VD: 60B1 - 123.45">
-        </div>
-        <div class="form-group">
+
+        <div class="form-group" style="margin-bottom: 16px;">
             <label>Ghi chú / Vật dụng gửi kèm</label>
             <input type="text" id="reg_tn_note" placeholder="VD: Gửi đồ ăn, thuốc men...">
         </div>
@@ -180,13 +181,13 @@
     </form>
 
     <div id="qr-result-box">
-        <div style="font-size:14px; font-weight:700; color:var(--success);">🎉 ĐÃ TẠO PHIẾU ĐĂNG KÝ THÀNH CÔNG!</div>
-        <div style="font-size:12px; color:#475569; margin-top:4px;">Cách 1: Đưa mã QR này cho Trực ban Cổng gác quét:</div>
-        <div style="background:white; padding:12px; border:2px dashed #059669; border-radius:8px; display:inline-block; margin:8px 0;">
+        <div style="font-size:15px; font-weight:700; color:var(--success);">🎉 ĐÃ TẠO PHIẾU ĐĂNG KÝ THÀNH CÔNG!</div>
+        <div style="font-size:13px; color:#475569; margin-top:6px;">Cách 1: Đưa mã QR này cho Trực ban Cổng gác quét:</div>
+        <div style="background:white; padding:12px; border:2px dashed #059669; border-radius:8px; display:inline-block; margin:10px 0;">
             <canvas id="visitor-qr-canvas" width="210" height="210"></canvas>
         </div>
         
-        <div style="font-size:12px; color:#475569; margin-top:6px; font-weight:600;">Cách 2: Nếu cổng không có máy quét, bấm sao chép mã dưới gửi Zalo cho Trực ban:</div>
+        <div style="font-size:13px; color:#475569; margin-top:8px; font-weight:600;">Cách 2: Bấm sao chép đoạn mã dài bên dưới gửi qua Zalo cho Trực ban:</div>
         <textarea id="full-code-output" class="code-preview" readonly></textarea>
         <button type="button" class="btn btn-copy" onclick="copyFullCode()">📋 SAO CHÉP MÃ XÁC NHẬN GỬI TRỰC BAN</button>
         <button type="button" class="btn btn-reset" onclick="editFormAgain()">✏️ Sửa lại thông tin</button>
