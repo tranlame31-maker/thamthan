@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Đăng Ký Thăm Thân Điện Tử — Trung Đoàn 31</title>
+    <style>
+        :root {
+            --primary: #1b4332;
+            --primary-light: #2d6a4f;
+            --accent: #d97706;
+            --danger: #dc2626;
+            --success: #16a34a;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text: #1e293b;
+            --border: #cbd5e1;
+        }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { margin: 0; background: var(--bg); color: var(--text); padding-bottom: 50px; }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 18px 16px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.18);
+            border-bottom: 4px solid #eab308;
+        }
+        .emblem {
+            width: 52px;
+            height: 52px;
+            background: #dc2626;
+            color: #fde047;
+            border: 2.5px solid #eab308;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+        header h1 { margin: 0; font-size: 18px; text-transform: uppercase; letter-spacing: 0.5px; }
+        header p { margin: 4px 0 0 0; font-size: 13px; opacity: 0.92; }
+
+        .container { max-width: 680px; margin: 16px auto; padding: 0 14px; }
+
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 18px 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 14.5px;
+            font-weight: 800;
+            color: var(--primary);
+            text-transform: uppercase;
+            padding-bottom: 8px;
+            margin: 0 0 14px 0;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        @media (max-width: 560px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+
+        .form-group { display: flex; flex-direction: column; margin-bottom: 12px; }
+        .form-group label { font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 5px; }
+        .form-group label span.req { color: var(--danger); }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-size: 15px;
+            background: #ffffff;
+            color: #1e293b;
+            outline: none;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(27, 67, 50, 0.12);
+        }
+        .form-group input[readonly] {
+            background: #e2e8f0;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        .custom-other-input {
+            margin-top: 6px;
+            display: none;
+            border-color: var(--accent) !important;
+            background: #fffbeb !important;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 13px 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: opacity 0.2s;
+        }
+        .btn:active { transform: scale(0.99); }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; box-shadow: 0 4px 12px rgba(27, 67, 50, 0.28); }
+        .btn-success { background: var(--success); color: white; }
+        .btn-warning { background: var(--accent); color: white; }
+        .btn-outline { background: white; border: 1.5px solid var(--border); color: #334155; }
+        .btn-sm { padding: 8px 12px; font-size: 13px; width: auto; }
+
+        /* Kết quả Mã QR */
+        #qr-result-section {
+            display: none;
+            border: 2.5px solid #16a34a;
+            background: #f0fdf4;
+        }
+        .qr-box {
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            border: 2px dashed #059669;
+            display: inline-block;
+            margin: 10px auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .backup-code-box {
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 12px;
+            text-align: left;
+        }
+        .backup-code-text {
+            width: 100%;
+            height: 62px;
+            font-family: monospace;
+            font-size: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 6px;
+            background: #f8fafc;
+            resize: none;
+            color: #0f172a;
+        }
+        .summary-list {
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 13.5px;
+            text-align: left;
+            margin-top: 12px;
+            border: 1px solid #cbd5e1;
+            line-height: 1.6;
+        }
+        .footer-credit {
+            text-align: center;
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 18px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="emblem">★</div>
+    <h1>ĐĂNG KÝ THĂM THÂN ĐIỆN TỬ</h1>
+    <p>Trung đoàn 31 — Khai báo thông tin & Tạo mã QR vào cổng</p>
+</header>
+
+<div class="container">
+
+    <!-- KHU VỰC HIỂN THỊ KẾT QUẢ MÃ QR SAU KHI TẠO -->
+    <div id="qr-result-section" class="card" style="text-align: center;">
+        <div style="font-size: 16px; font-weight: 800; color: #15803d; text-transform: uppercase;">
+            ✅ ĐÃ TẠO PHIẾU & MÃ QR THÀNH CÔNG!
+        </div>
+        <div style="font-size: 13.5px; color: #334155; margin-top: 4px;">
+            Vui lòng đưa mã QR dưới đây cho đồng chí <strong>Trực ban / Gác cổng</strong> quét:
+        </div>
+
+        <div class="qr-box">
+            <img id="generated-qr-img" src="" alt="Mã QR Thăm Thân" style="width: 240px; height: 240px; display: block;">
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 6px;">
+            <button type="button" class="btn btn-success btn-sm" onclick="downloadQRImage()">📥 Lưu Ảnh QR Về Máy</button>
+            <button type="button" class="btn btn-outline btn-sm" onclick="editFormAgain()">✏️ Sửa Lại Thông Tin</button>
+        </div>
+
+        <!-- MÃ DỰ PHÒNG KHI MÁY QUÉT HỎNG -->
+        <div class="backup-code-box">
+            <div style="font-size: 12.5px; font-weight: 700; color: #b45309; margin-bottom: 5px;">
+                ⚠️ Mã dự phòng (Dùng khi máy quét tại cổng gặp sự cố):
+            </div>
+            <textarea id="backup-payload-text" class="backup-code-text" readonly></textarea>
+            <button type="button" class="btn btn-warning btn-sm" style="margin-top: 6px; width: 100%;" onclick="copyBackupCode()">
+                📋 Sao Chép Mã Dự Phòng Gửi Trực Ban
+            </button>
+        </div>
+
+        <div id="ticket-summary" class="summary-list"></div>
+    </div>
+
+    <!-- FORM NHẬP THÔNG TIN (ĐỒNG BỘ 100% VỚI PHẦN MỀM CỔNG GÁC) -->
+    <form id="reg-form" onsubmit="generateVisitorQR(event)">
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <span style="font-size: 12.5px; color: #15803d; font-weight: 700;">💡 Nhập đầy đủ thông tin bên dưới:</span>
+                <button type="button" class="btn btn-outline btn-sm" onclick="clearSavedForm()">Xóa trắng Form</button>
+            </div>
+
+            <div class="section-title">A. Thông tin Quân nhân được thăm</div>
+
+            <div class="form-group">
+                <label>Họ và tên Quân nhân <span class="req">*</span></label>
+                <input type="text" id="qn_name" required placeholder="VD: Nguyễn Văn A">
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Cấp bậc <span class="req">*</span></label>
+                    <select id="qn_rank_select" onchange="toggleOtherInput('qn_rank_select', 'qn_rank_other')" required>
+                        <option value="" disabled selected>-- Bấm chọn cấp bậc --</option>
+                        <option value="Binh nhì">Binh nhì</option>
+                        <option value="Binh nhất">Binh nhất</option>
+                        <option value="Hạ sĩ">Hạ sĩ</option>
+                        <option value="Trung sĩ">Trung sĩ</option>
+                        <option value="Thượng sĩ">Thượng sĩ</option>
+                        <option value="Khác">Khác (Tự điền...)</option>
+                    </select>
+                    <input type="text" id="qn_rank_other" class="custom-other-input" placeholder="Nhập cấp bậc khác...">
+                </div>
+
+                <div class="form-group">
+                    <label>Chức vụ <span class="req">*</span></label>
+                    <select id="qn_pos_select" onchange="toggleOtherInput('qn_pos_select', 'qn_pos_other')" required>
+                        <option value="" disabled selected>-- Bấm chọn chức vụ --</option>
+                        <option value="Chiến sĩ">Chiến sĩ</option>
+                        <option value="Tiểu đội trưởng">Tiểu đội trưởng</option>
+                        <option value="Khẩu đội trưởng">Khẩu đội trưởng</option>
+                        <option value="Y tá">Y tá</option>
+                        <option value="Khác">Khác (Tự điền...)</option>
+                    </select>
+                    <input type="text" id="qn_pos_other" class="custom-other-input" placeholder="Nhập chức vụ khác...">
+                </div>
+            </div>
+
+            <div style="font-size: 13px; font-weight: 700; color: #334155; margin: 6px 0 8px 0;">
+                Đơn vị công tác <span style="font-weight: 400; color: #64748b;">(Điền các cấp đơn vị của quân nhân):</span>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Tiểu đội (a)</label>
+                    <input type="text" id="qn_a" placeholder="VD: Tiểu đội 1 / Vận tải...">
+                </div>
+                <div class="form-group">
+                    <label>Trung đội (b)</label>
+                    <input type="text" id="qn_b" placeholder="VD: Trung đội 1">
+                </div>
+                <div class="form-group">
+                    <label>Đại đội (c)</label>
+                    <input type="text" id="qn_c" placeholder="VD: Đại đội 1">
+                </div>
+                <div class="form-group">
+                    <label>Tiểu đoàn (d)</label>
+                    <input type="text" id="qn_d" placeholder="VD: Tiểu đoàn 8">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Trung đoàn (e)</label>
+                <input type="text" id="qn_e" value="Trung đoàn 31" readonly>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="section-title">B. Thông tin Thân nhân đến thăm</div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Họ và tên Thân nhân đại diện <span class="req">*</span></label>
+                    <input type="text" id="tn_name" required placeholder="VD: Trần Thị B">
+                </div>
+                <div class="form-group">
+                    <label>Số CCCD / CMND <span class="req">*</span></label>
+                    <input type="text" id="tn_cccd" required placeholder="Nhập số CCCD">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Mối quan hệ với Quân nhân <span class="req">*</span></label>
+                    <select id="tn_rel_select" onchange="toggleOtherInput('tn_rel_select', 'tn_rel_other')" required>
+                        <option value="" disabled selected>-- Bấm chọn quan hệ --</option>
+                        <option value="Bố / Mẹ">Bố / Mẹ</option>
+                        <option value="Vợ / Con">Vợ / Con</option>
+                        <option value="Anh / Chị / Em">Anh / Chị / Em</option>
+                        <option value="Người yêu">Người yêu</option>
+                        <option value="Ông / Bà / Họ hàng">Ông / Bà / Họ hàng</option>
+                        <option value="Bạn bè">Bạn bè</option>
+                        <option value="Khác">Khác (Tự điền...)</option>
+                    </select>
+                    <input type="text" id="tn_rel_other" class="custom-other-input" placeholder="Nhập mối quan hệ khác...">
+                </div>
+
+                <div class="form-group">
+                    <label>Số điện thoại liên hệ <span class="req">*</span></label>
+                    <input type="tel" id="tn_phone" required placeholder="VD: 0912345678">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Nơi cư trú (Phường/Xã, Tỉnh/Thành phố) <span class="req">*</span></label>
+                <input type="text" id="tn_addr" required placeholder="VD: Phường Tân Sơn Nhì, TP. HCM">
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Số lượng người đi cùng (Tính cả người đại diện) <span class="req">*</span></label>
+                    <input type="number" id="tn_count" min="1" max="50" required placeholder="VD: 2">
+                </div>
+
+                <div class="form-group">
+                    <label>Phương tiện <span class="req">*</span></label>
+                    <select id="tn_vehicle_select" onchange="toggleOtherInput('tn_vehicle_select', 'tn_vehicle_other')" required>
+                        <option value="" disabled selected>-- Bấm chọn phương tiện --</option>
+                        <option value="Đi bộ">Đi bộ</option>
+                        <option value="Xe máy">Xe máy</option>
+                        <option value="Xe ô tô">Xe ô tô</option>
+                        <option value="Khác">Khác (Tự điền...)</option>
+                    </select>
+                    <input type="text" id="tn_vehicle_other" class="custom-other-input" placeholder="Nhập phương tiện khác...">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Biển số xe (Nếu đi xe)</label>
+                    <input type="text" id="tn_plate" placeholder="VD: 60B1 - 123.45">
+                </div>
+                <div class="form-group">
+                    <label>Ghi chú / Vật dụng gửi kèm</label>
+                    <input type="text" id="tn_note" placeholder="VD: Trái cây, đồ ăn...">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="margin-top: 8px;">
+                📲 TẠO MÃ QR ĐỂ VÀO CỔNG
+            </button>
+        </div>
+    </form>
+
+    <div class="footer-credit">
+        Hệ thống Đăng ký Thăm thân Điện tử — Trung đoàn 31<br>
+        Người phát triển: <strong>Trần Hoàng Lâm</strong> | Hỗ trợ: <strong>0966772321</strong>
+    </div>
+</div>
+
+<script>
+    const SAVED_FORM_KEY = 'THAM_THAN_E31_MOBILE_SAVED';
+
+    function toggleOtherInput(selectId, inputId) {
+        const sel = document.getElementById(selectId);
+        const inp = document.getElementById(inputId);
+        if (sel.value === 'Khác') {
+            inp.style.display = 'block';
+            inp.required = true;
+            inp.focus();
+        } else {
+            inp.style.display = 'none';
+            inp.required = false;
+            inp.value = '';
+        }
+    }
+
+    function setSelectWithOther(selectId, inputId, val) {
+        const sel = document.getElementById(selectId);
+        const inp = document.getElementById(inputId);
+        if (!val) {
+            sel.value = "";
+            toggleOtherInput(selectId, inputId);
+            return;
+        }
+        const options = Array.from(sel.options).map(o => o.value);
+        if (options.includes(val) && val !== 'Khác') {
+            sel.value = val;
+            toggleOtherInput(selectId, inputId);
+        } else {
+            sel.value = 'Khác';
+            toggleOtherInput(selectId, inputId);
+            inp.value = val;
+        }
+    }
+
+    function getSelectWithOtherValue(selectId, inputId) {
+        const sel = document.getElementById(selectId);
+        if (sel.value === 'Khác') {
+            return document.getElementById(inputId).value.trim() || 'Khác';
+        }
+        return sel.value;
+    }
+
+    // Mã hóa chuẩn UTF-8 đồng bộ 100% với phần mềm Cổng gác máy tính
+    function encodeQRPayload(obj) {
+        const jsonStr = JSON.stringify(obj);
+        const bytes = new TextEncoder().encode(jsonStr);
+        let binString = "";
+        bytes.forEach(b => binString += String.fromCharCode(b));
+        return "TTVN:" + btoa(binString);
+    }
+
+    function generateVisitorQR(e) {
+        e.preventDefault();
+
+        const payloadObj = {
+            qn_name: document.getElementById('qn_name').value.trim(),
+            qn_rank: getSelectWithOtherValue('qn_rank_select', 'qn_rank_other'),
+            qn_pos: getSelectWithOtherValue('qn_pos_select', 'qn_pos_other'),
+            qn_a: document.getElementById('qn_a').value.trim(),
+            qn_b: document.getElementById('qn_b').value.trim(),
+            qn_c: document.getElementById('qn_c').value.trim(),
+            qn_d: document.getElementById('qn_d').value.trim(),
+            qn_e: 'Trung đoàn 31',
+            tn_name: document.getElementById('tn_name').value.trim(),
+            tn_cccd: document.getElementById('tn_cccd').value.trim(),
+            tn_rel: getSelectWithOtherValue('tn_rel_select', 'tn_rel_other'),
+            tn_phone: document.getElementById('tn_phone').value.trim(),
+            tn_addr: document.getElementById('tn_addr').value.trim(),
+            tn_count: parseInt(document.getElementById('tn_count').value) || 1,
+            tn_vehicle: getSelectWithOtherValue('tn_vehicle_select', 'tn_vehicle_other'),
+            tn_plate: document.getElementById('tn_plate').value.trim(),
+            tn_note: document.getElementById('tn_note').value.trim()
+        };
+
+        // Lưu tự động trên điện thoại thân nhân để lần sau thăm không cần gõ lại
+        localStorage.setItem(SAVED_FORM_KEY, JSON.stringify(payloadObj));
+
+        const encodedString = encodeQRPayload(payloadObj);
+        document.getElementById('backup-payload-text').value = encodedString;
+
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&margin=8&data=${encodeURIComponent(encodedString)}`;
+        document.getElementById('generated-qr-img').src = qrUrl;
+
+        const unitText = [payloadObj.qn_a, payloadObj.qn_b, payloadObj.qn_c, payloadObj.qn_d, 'Trung đoàn 31'].filter(Boolean).join(' - ');
+        document.getElementById('ticket-summary').innerHTML = `
+            <strong>Quân nhân được thăm:</strong> ${payloadObj.qn_name} (${payloadObj.qn_rank} - ${payloadObj.qn_pos})<br>
+            <strong>Đơn vị:</strong> ${unitText}<br>
+            <strong>Thân nhân đại diện:</strong> ${payloadObj.tn_name} (${payloadObj.tn_rel})<br>
+            <strong>CCCD:</strong> ${payloadObj.tn_cccd} | <strong>SĐT:</strong> ${payloadObj.tn_phone}<br>
+            <strong>Nơi cư trú:</strong> ${payloadObj.tn_addr}<br>
+            <strong>Số lượng & Phương tiện:</strong> ${payloadObj.tn_count} người — ${payloadObj.tn_vehicle}${payloadObj.tn_plate ? ' (' + payloadObj.tn_plate + ')' : ''}
+        `;
+
+        document.getElementById('qr-result-section').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function editFormAgain() {
+        document.getElementById('qr-result-section').style.display = 'none';
+    }
+
+    function copyBackupCode() {
+        const box = document.getElementById('backup-payload-text');
+        box.select();
+        box.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(box.value).then(() => {
+            alert("✅ Đã sao chép mã dự phòng! Bạn có thể gửi qua Zalo/Tin nhắn cho trực ban nhập vào máy tính.");
+        }).catch(() => {
+            document.execCommand('copy');
+            alert("✅ Đã sao chép mã dự phòng!");
+        });
+    }
+
+    function downloadQRImage() {
+        const img = document.getElementById('generated-qr-img');
+        if (!img.src) return;
+        fetch(img.src)
+            .then(res => res.blob())
+            .then(blob => {
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'MaQR_VaoCong_ThamThan.png';
+                a.click();
+            })
+            .catch(() => {
+                alert("💡 Bạn có thể chụp màn hình điện thoại lại để lưu mã QR này nhé!");
+            });
+    }
+
+    function clearSavedForm() {
+        if (!confirm("Xóa thông tin đã lưu trên máy để nhập phiếu mới?")) return;
+        localStorage.removeItem(SAVED_FORM_KEY);
+        document.getElementById('reg-form').reset();
+        document.getElementById('qn_e').value = 'Trung đoàn 31';
+        toggleOtherInput('qn_rank_select', 'qn_rank_other');
+        toggleOtherInput('qn_pos_select', 'qn_pos_other');
+        toggleOtherInput('tn_rel_select', 'tn_rel_other');
+        toggleOtherInput('tn_vehicle_select', 'tn_vehicle_other');
+        document.getElementById('qr-result-section').style.display = 'none';
+    }
+
+    // Tự động điền lại thông tin lần trước nếu thân nhân đã từng tạo phiếu trên điện thoại này
+    window.addEventListener('DOMContentLoaded', () => {
+        const saved = localStorage.getItem(SAVED_FORM_KEY);
+        if (!saved) return;
+        try {
+            const d = JSON.parse(saved);
+            document.getElementById('qn_name').value = d.qn_name || '';
+            setSelectWithOther('qn_rank_select', 'qn_rank_other', d.qn_rank || '');
+            setSelectWithOther('qn_pos_select', 'qn_pos_other', d.qn_pos || '');
+            document.getElementById('qn_a').value = d.qn_a || '';
+            document.getElementById('qn_b').value = d.qn_b || '';
+            document.getElementById('qn_c').value = d.qn_c || '';
+            document.getElementById('qn_d').value = d.qn_d || '';
+            document.getElementById('qn_e').value = 'Trung đoàn 31';
+            document.getElementById('tn_name').value = d.tn_name || '';
+            document.getElementById('tn_cccd').value = d.tn_cccd || '';
+            setSelectWithOther('tn_rel_select', 'tn_rel_other', d.tn_rel || '');
+            document.getElementById('tn_phone').value = d.tn_phone || '';
+            document.getElementById('tn_addr').value = d.tn_addr || '';
+            document.getElementById('tn_count').value = d.tn_count || '';
+            setSelectWithOther('tn_vehicle_select', 'tn_vehicle_other', d.tn_vehicle || '');
+            document.getElementById('tn_plate').value = d.tn_plate || '';
+            document.getElementById('tn_note').value = d.tn_note || '';
+        } catch (e) {}
+    });
+</script>
+
+</body>
+</html>
