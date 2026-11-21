@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Đăng Ký Thăm Thân Điện Tử — Trung Đoàn 31</title>
+    <link rel="icon" type="image/png" href="logo.png">
     <style>
         :root {
             --primary: #1b4332;
@@ -57,7 +58,6 @@
         header p { margin: 4px 0 0 0; font-size: 13px; opacity: 0.92; }
 
         .container { max-width: 680px; margin: 16px auto; padding: 0 14px; }
-
         .card {
             background: var(--card);
             border-radius: 12px;
@@ -65,7 +65,6 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.07);
             margin-bottom: 16px;
         }
-
         .section-title {
             font-size: 14.5px;
             font-weight: 800;
@@ -75,7 +74,6 @@
             margin: 0 0 14px 0;
             border-bottom: 2px solid #e2e8f0;
         }
-
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -84,7 +82,6 @@
         @media (max-width: 560px) {
             .grid-2 { grid-template-columns: 1fr; }
         }
-
         .form-group { display: flex; flex-direction: column; margin-bottom: 12px; }
         .form-group label { font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 5px; }
         .form-group label span.req { color: var(--danger); }
@@ -113,7 +110,6 @@
             border-color: var(--accent) !important;
             background: #fffbeb !important;
         }
-
         .btn {
             width: 100%;
             padding: 13px 16px;
@@ -135,7 +131,6 @@
         .btn-outline { background: white; border: 1.5px solid var(--border); color: #334155; }
         .btn-sm { padding: 8px 12px; font-size: 13px; width: auto; }
 
-        /* Kết quả Mã QR */
         #qr-result-section {
             display: none;
             border: 2.5px solid #16a34a;
@@ -154,21 +149,21 @@
             background: #ffffff;
             border: 1.5px solid #cbd5e1;
             border-radius: 8px;
-            padding: 10px;
+            padding: 12px;
             margin-top: 12px;
-            text-align: left;
+            text-align: center;
         }
-        .backup-code-text {
-            width: 100%;
-            height: 62px;
+        .short-code-display {
             font-family: monospace;
-            font-size: 12px;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            padding: 6px;
-            background: #f8fafc;
-            resize: none;
-            color: #0f172a;
+            font-size: 22px;
+            font-weight: bold;
+            color: #b45309;
+            background: #fffbeb;
+            border: 2px dashed #d97706;
+            padding: 10px;
+            border-radius: 8px;
+            letter-spacing: 2px;
+            margin: 8px 0;
         }
         .summary-list {
             background: white;
@@ -200,8 +195,6 @@
 </header>
 
 <div class="container">
-
-    <!-- KHU VỰC HIỂN THỊ KẾT QUẢ MÃ QR SAU KHI TẠO -->
     <div id="qr-result-section" class="card" style="text-align: center;">
         <div style="font-size: 16px; font-weight: 800; color: #15803d; text-transform: uppercase;">
             ✅ ĐÃ TẠO PHIẾU & MÃ QR THÀNH CÔNG!
@@ -219,21 +212,19 @@
             <button type="button" class="btn btn-outline btn-sm" onclick="editFormAgain()">✏️ Sửa Lại Thông Tin</button>
         </div>
 
-        <!-- MÃ DỰ PHÒNG KHI MÁY QUÉT HỎNG -->
         <div class="backup-code-box">
-            <div style="font-size: 12.5px; font-weight: 700; color: #b45309; margin-bottom: 5px;">
-                ⚠️ Mã dự phòng (Dùng khi máy quét tại cổng gặp sự cố):
+            <div style="font-size: 13.5px; font-weight: 700; color: #334155;">
+                🎫 MÃ SỐ SERI ĐỌC CHO TRỰC BAN (Khi không quét được QR):
             </div>
-            <textarea id="backup-payload-text" class="backup-code-text" readonly></textarea>
-            <button type="button" class="btn btn-warning btn-sm" style="margin-top: 6px; width: 100%;" onclick="copyBackupCode()">
-                📋 Sao Chép Mã Dự Phòng Gửi Trực Ban
+            <div id="short-code-text" class="short-code-display">---</div>
+            <button type="button" class="btn btn-warning btn-sm" style="margin-top: 4px; width: 100%;" onclick="copyShortCode()">
+                📋 Sao Chép Mã Số Seri
             </button>
         </div>
 
         <div id="ticket-summary" class="summary-list"></div>
     </div>
 
-    <!-- FORM NHẬP THÔNG TIN (ĐỒNG BỘ 100% VỚI PHẦN MỀM CỔNG GÁC) -->
     <form id="reg-form" onsubmit="generateVisitorQR(event)">
         <div class="card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
@@ -391,6 +382,7 @@
 
 <script>
     const SAVED_FORM_KEY = 'THAM_THAN_E31_MOBILE_SAVED';
+    let currentPayloadObj = null;
 
     function toggleOtherInput(selectId, inputId) {
         const sel = document.getElementById(selectId);
@@ -433,7 +425,6 @@
         return sel.value;
     }
 
-    // Mã hóa chuẩn UTF-8 đồng bộ 100% với phần mềm Cổng gác máy tính
     function encodeQRPayload(obj) {
         const jsonStr = JSON.stringify(obj);
         const bytes = new TextEncoder().encode(jsonStr);
@@ -445,7 +436,12 @@
     function generateVisitorQR(e) {
         e.preventDefault();
 
-        const payloadObj = {
+        // Tạo mã seri độc lập 4 chữ số ngẫu nhiên kết hợp thời gian (VD: E31-8492)
+        const randomCode = Math.floor(1000 + Math.random() * 9000);
+        const serialCode = `E31-${randomCode}`;
+
+        currentPayloadObj = {
+            serial: serialCode,
             qn_name: document.getElementById('qn_name').value.trim(),
             qn_rank: getSelectWithOtherValue('qn_rank_select', 'qn_rank_other'),
             qn_pos: getSelectWithOtherValue('qn_pos_select', 'qn_pos_other'),
@@ -465,23 +461,24 @@
             tn_note: document.getElementById('tn_note').value.trim()
         };
 
-        // Lưu tự động trên điện thoại thân nhân để lần sau thăm không cần gõ lại
-        localStorage.setItem(SAVED_FORM_KEY, JSON.stringify(payloadObj));
+        localStorage.setItem(SAVED_FORM_KEY, JSON.stringify(currentPayloadObj));
 
-        const encodedString = encodeQRPayload(payloadObj);
-        document.getElementById('backup-payload-text').value = encodedString;
+        const encodedString = encodeQRPayload(currentPayloadObj);
+
+        // Hiển thị mã seri độc lập lên màn hình điện thoại
+        document.getElementById('short-code-text').textContent = serialCode;
 
         const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&margin=8&data=${encodeURIComponent(encodedString)}`;
         document.getElementById('generated-qr-img').src = qrUrl;
 
-        const unitText = [payloadObj.qn_a, payloadObj.qn_b, payloadObj.qn_c, payloadObj.qn_d, 'Trung đoàn 31'].filter(Boolean).join(' - ');
+        const unitText = [currentPayloadObj.qn_a, currentPayloadObj.qn_b, currentPayloadObj.qn_c, currentPayloadObj.qn_d, 'Trung đoàn 31'].filter(Boolean).join(' - ');
         document.getElementById('ticket-summary').innerHTML = `
-            <strong>Quân nhân được thăm:</strong> ${payloadObj.qn_name} (${payloadObj.qn_rank} - ${payloadObj.qn_pos})<br>
+            <strong>Mã số seri:</strong> <span style="color:#b45309; font-weight:bold;">${serialCode}</span><br>
+            <strong>Quân nhân được thăm:</strong> ${currentPayloadObj.qn_name} (${currentPayloadObj.qn_rank} - ${currentPayloadObj.qn_pos})<br>
             <strong>Đơn vị:</strong> ${unitText}<br>
-            <strong>Thân nhân đại diện:</strong> ${payloadObj.tn_name} (${payloadObj.tn_rel})<br>
-            <strong>CCCD:</strong> ${payloadObj.tn_cccd} | <strong>SĐT:</strong> ${payloadObj.tn_phone}<br>
-            <strong>Nơi cư trú:</strong> ${payloadObj.tn_addr}<br>
-            <strong>Số lượng & Phương tiện:</strong> ${payloadObj.tn_count} người — ${payloadObj.tn_vehicle}${payloadObj.tn_plate ? ' (' + payloadObj.tn_plate + ')' : ''}
+            <strong>Thân nhân đại diện:</strong> ${currentPayloadObj.tn_name} (${currentPayloadObj.tn_rel})<br>
+            <strong>CCCD:</strong> ${currentPayloadObj.tn_cccd} | <strong>SĐT:</strong> ${currentPayloadObj.tn_phone}<br>
+            <strong>Số lượng & Phương tiện:</strong> ${currentPayloadObj.tn_count} người — ${currentPayloadObj.tn_vehicle}
         `;
 
         document.getElementById('qr-result-section').style.display = 'block';
@@ -492,15 +489,12 @@
         document.getElementById('qr-result-section').style.display = 'none';
     }
 
-    function copyBackupCode() {
-        const box = document.getElementById('backup-payload-text');
-        box.select();
-        box.setSelectionRange(0, 99999);
-        navigator.clipboard.writeText(box.value).then(() => {
-            alert("✅ Đã sao chép mã dự phòng! Bạn có thể gửi qua Zalo/Tin nhắn cho trực ban nhập vào máy tính.");
+    function copyShortCode() {
+        const text = document.getElementById('short-code-text').textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            alert("✅ Đã sao chép mã số seri: " + text);
         }).catch(() => {
-            document.execCommand('copy');
-            alert("✅ Đã sao chép mã dự phòng!");
+            alert("✅ Đã sao chép: " + text);
         });
     }
 
@@ -532,7 +526,6 @@
         document.getElementById('qr-result-section').style.display = 'none';
     }
 
-    // Tự động điền lại thông tin lần trước nếu thân nhân đã từng tạo phiếu trên điện thoại này
     window.addEventListener('DOMContentLoaded', () => {
         const saved = localStorage.getItem(SAVED_FORM_KEY);
         if (!saved) return;
