@@ -174,7 +174,7 @@
 
     function generateRegistration(e) {
         e.preventDefault();
-        // Giữ nguyên hoàn toàn dãy mã dài đầy đủ ban đầu
+        // Giữ nguyên dãy mã dài nguyên bản
         const fullSerial = 'E31-' + Math.random().toString(36).substring(2, 8).toUpperCase() + '-' + Math.random().toString(36).substring(2, 8).toUpperCase() + '-' + Date.now();
         
         const payload = {
@@ -199,15 +199,32 @@
             date: new Date().toISOString().split('T')[0]
         };
 
+        // Lưu vào cả 2 khoá localStorage để phần mềm máy tính đọc được chính xác 100%
         let cloudRecords = JSON.parse(localStorage.getItem('E31_SHARED_REG_RECORDS') || '[]');
         cloudRecords.unshift(payload);
         if (cloudRecords.length > 200) cloudRecords.pop();
         localStorage.setItem('E31_SHARED_REG_RECORDS', JSON.stringify(cloudRecords));
 
+        let masterVisits = JSON.parse(localStorage.getItem('QUAN_LY_THAM_THAN_VISITS_MASTER') || '[]');
+        masterVisits.unshift({
+            id: 'V' + Date.now(),
+            serial: fullSerial,
+            date: payload.date,
+            time_in: `${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}`,
+            time_out: '',
+            status: 'PENDING',
+            qn_name: payload.qn_name, qn_rank: payload.qn_rank, qn_pos: payload.qn_pos,
+            qn_a: payload.qn_a, qn_b: payload.qn_b, qn_c: payload.qn_c, qn_d: payload.qn_d, qn_e: payload.qn_e,
+            tn_cccd: payload.tn_cccd, tn_name: payload.tn_name, tn_rel: payload.tn_rel,
+            tn_phone: payload.tn_phone, tn_addr: payload.tn_addr, tn_count: payload.tn_count,
+            tn_vehicle: payload.tn_vehicle, tn_plate: payload.tn_plate, tn_note: payload.tn_note
+        });
+        localStorage.setItem('QUAN_LY_THAM_THAN_VISITS_MASTER', JSON.stringify(masterVisits));
+
         document.getElementById('serial-display-box').textContent = fullSerial;
         document.getElementById('qr-result-box').style.display = 'block';
 
-        // Tạo QR chứa chính xác dãy mã dài nguyên bản để quét
+        // Tạo mã QR chứa dãy mã dài nguyên bản
         const qrContainer = document.getElementById('visitor-qrcode-container');
         qrContainer.innerHTML = '';
         new QRCode(qrContainer, {
