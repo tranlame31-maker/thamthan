@@ -51,7 +51,7 @@
         .btn-reset { background: #e2e8f0; color: #334155; margin-top: 8px; font-size: 13px; padding: 10px; }
 
         #qr-result-box { display: none; text-align: center; margin-top: 16px; padding: 16px; background: #f0fdf4; border: 2px dashed var(--success); border-radius: 10px; }
-        .serial-badge { font-size: 13px; font-weight: 700; color: #b45309; background: #fef3c7; padding: 10px 14px; border-radius: 8px; display: inline-block; border: 2px dashed #d97706; margin: 8px 0; word-break: break-all; }
+        .serial-textarea { width: 100%; height: 90px; font-size: 11.5px; font-family: monospace; padding: 8px; border: 1px solid var(--border); border-radius: 6px; background: #fff; resize: none; word-break: break-all; color: #334155; margin: 6px 0; }
         
         #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 10px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; display: none; z-index: 1000; width: 90%; max-width: 380px; text-align: center; }
     </style>
@@ -154,9 +154,13 @@
 
         <div id="qr-result-box">
             <div style="font-size:15px; font-weight:700; color:var(--success);">🎉 ĐÃ TẠO PHIẾU ĐĂNG KÝ THÀNH CÔNG!</div>
-            <div style="margin: 10px 0;"><div id="visitor-qrcode-container" style="background:white; padding:10px; border:2px dashed #059669; border-radius:8px; display:inline-block;"></div></div>
-            <div id="serial-display-box" class="serial-badge"></div>
-            <div><button type="button" class="btn btn-copy" onclick="copySerialCode()">📋 SAO CHÉP MÃ PHIẾU</button></div>
+            <div style="font-size: 12px; color: #475569; margin: 6px 0;">Cách 1: Đưa mã QR cho Trực ban Cổng gác quét:</div>
+            <div style="margin: 6px 0;"><div id="visitor-qrcode-container" style="background:white; padding:10px; border:2px dashed #059669; border-radius:8px; display:inline-block;"></div></div>
+            
+            <div style="font-size: 12px; color: #475569; margin: 10px 0 4px 0;">Cách 2: Bấm sao chép đoạn mã dài bên dưới gửi qua Zalo cho Trực ban:</div>
+            <textarea id="serial-textarea-box" class="serial-textarea" readonly></textarea>
+            
+            <div><button type="button" class="btn btn-copy" onclick="copySerialCode()">📋 SAO CHÉP MÃ XÁC NHẬN GỬI TRỰC BAN</button></div>
             <button type="button" class="btn btn-reset" onclick="editFormAgain()">✏️ Sửa lại thông tin</button>
         </div>
     </div>
@@ -174,11 +178,9 @@
 
     function generateRegistration(e) {
         e.preventDefault();
-        // Giữ nguyên dãy mã dài nguyên bản
-        const fullSerial = 'E31-' + Math.random().toString(36).substring(2, 8).toUpperCase() + '-' + Math.random().toString(36).substring(2, 8).toUpperCase() + '-' + Date.now();
         
         const payload = {
-            serial: fullSerial,
+            serial: 'E31-' + Math.random().toString(36).substring(2, 8).toUpperCase() + '-' + Date.now(),
             qn_name: document.getElementById('reg_qn_name').value.trim(),
             qn_rank: document.getElementById('reg_qn_rank').value,
             qn_pos: document.getElementById('reg_qn_pos').value,
@@ -199,36 +201,24 @@
             date: new Date().toISOString().split('T')[0]
         };
 
-        // Lưu vào cả 2 khoá localStorage để phần mềm máy tính đọc được chính xác 100%
+        // Mã hóa toàn bộ thông tin thành chuỗi dài dạng base64 (giống Ảnh 2)
+        const jsonStr = JSON.stringify(payload);
+        const longEncodedCode = "TTVN:" + btoa(unescape(encodeURIComponent(jsonStr)));
+
+        // Lưu vào localStorage để phần mềm trực ban trên máy tính đọc được
         let cloudRecords = JSON.parse(localStorage.getItem('E31_SHARED_REG_RECORDS') || '[]');
-        cloudRecords.unshift(payload);
+        cloudRecords.unshift({ ...payload, longCode: longEncodedCode });
         if (cloudRecords.length > 200) cloudRecords.pop();
         localStorage.setItem('E31_SHARED_REG_RECORDS', JSON.stringify(cloudRecords));
 
-        let masterVisits = JSON.parse(localStorage.getItem('QUAN_LY_THAM_THAN_VISITS_MASTER') || '[]');
-        masterVisits.unshift({
-            id: 'V' + Date.now(),
-            serial: fullSerial,
-            date: payload.date,
-            time_in: `${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}`,
-            time_out: '',
-            status: 'PENDING',
-            qn_name: payload.qn_name, qn_rank: payload.qn_rank, qn_pos: payload.qn_pos,
-            qn_a: payload.qn_a, qn_b: payload.qn_b, qn_c: payload.qn_c, qn_d: payload.qn_d, qn_e: payload.qn_e,
-            tn_cccd: payload.tn_cccd, tn_name: payload.tn_name, tn_rel: payload.tn_rel,
-            tn_phone: payload.tn_phone, tn_addr: payload.tn_addr, tn_count: payload.tn_count,
-            tn_vehicle: payload.tn_vehicle, tn_plate: payload.tn_plate, tn_note: payload.tn_note
-        });
-        localStorage.setItem('QUAN_LY_THAM_THAN_VISITS_MASTER', JSON.stringify(masterVisits));
-
-        document.getElementById('serial-display-box').textContent = fullSerial;
+        document.getElementById('serial-textarea-box').value = longEncodedCode;
         document.getElementById('qr-result-box').style.display = 'block';
 
-        // Tạo mã QR chứa dãy mã dài nguyên bản
+        // Tạo mã QR chứa chính xác chuỗi mã hóa dài đó
         const qrContainer = document.getElementById('visitor-qrcode-container');
         qrContainer.innerHTML = '';
         new QRCode(qrContainer, {
-            text: fullSerial,
+            text: longEncodedCode,
             width: 190,
             height: 190,
             colorDark: "#000000",
@@ -237,12 +227,13 @@
         });
 
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-        showToast("✅ Đã tạo mã phiếu thành công!");
+        showToast("✅ Đã tạo mã xác nhận thành công!");
     }
 
     function copySerialCode() {
-        const serialText = document.getElementById('serial-display-box').textContent;
-        navigator.clipboard.writeText(serialText).then(() => { showToast("📋 Đã sao chép mã phiếu!"); });
+        const textArea = document.getElementById('serial-textarea-box');
+        textArea.select();
+        navigator.clipboard.writeText(textArea.value).then(() => { showToast("📋 Đã sao chép mã xác nhận!"); });
     }
     function editFormAgain() {
         document.getElementById('qr-result-box').style.display = 'none';
