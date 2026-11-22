@@ -174,7 +174,8 @@
 
     function generateRegistration(e) {
         e.preventDefault();
-        const fullSerial = 'E31-' + Math.random().toString(36).substring(2, 8).toUpperCase() + '-' + Date.now().toString().slice(-6);
+        // Giữ nguyên hoàn toàn dãy mã dài đầy đủ ban đầu
+        const fullSerial = 'E31-' + Math.random().toString(36).substring(2, 8).toUpperCase() + '-' + Math.random().toString(36).substring(2, 8).toUpperCase() + '-' + Date.now();
         
         const payload = {
             serial: fullSerial,
@@ -206,11 +207,11 @@
         document.getElementById('serial-display-box').textContent = fullSerial;
         document.getElementById('qr-result-box').style.display = 'block';
 
-        // Tạo mã QR chứa toàn bộ dữ liệu gói gọn
+        // Tạo QR chứa chính xác dãy mã dài nguyên bản để quét
         const qrContainer = document.getElementById('visitor-qrcode-container');
         qrContainer.innerHTML = '';
         new QRCode(qrContainer, {
-            text: JSON.stringify(payload),
+            text: fullSerial,
             width: 190,
             height: 190,
             colorDark: "#000000",
