@@ -41,10 +41,11 @@
         .btn { padding: 12px 20px; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; text-transform: uppercase; }
         .btn:hover { opacity: 0.92; }
         .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(27,67,50,0.3); }
+        .btn-warning { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(217,119,6,0.3); }
         .btn-outline { background: white; border: 1.5px solid var(--border); color: var(--text); padding: 6px 12px; font-size: 12px; width: auto; }
 
-        .result-box { display: none; background: #f0fdf4; border: 2px dashed #10b981; border-radius: 12px; padding: 20px; text-align: center; margin-top: 20px; }
-        .qr-render-area { background: white; padding: 16px; border-radius: 8px; display: inline-block; margin: 14px 0; border: 1px solid #e2e8f0; }
+        .result-box { display: none; background: #f0fdf4; border: 2.5px dashed #10b981; border-radius: 12px; padding: 22px; text-align: center; margin-top: 20px; }
+        .qr-render-area { background: white; padding: 16px; border-radius: 8px; display: inline-block; margin: 12px 0; border: 1px solid #e2e8f0; }
 
         #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; box-shadow: 0 10px 20px rgba(0,0,0,0.25); display: none; z-index: 1000; text-align: center; max-width: 90%; }
         .dev-footer { text-align: center; font-size: 12px; color: #64748b; margin-top: 30px; font-weight: 600; }
@@ -60,7 +61,7 @@
 </div>
 
 <div class="container">
-    <div class="card">
+    <div class="card" id="form-card-wrapper">
         <div class="card-title">
             <span>💡 Điền đầy đủ thông tin bên dưới:</span>
             <button type="button" class="btn btn-outline" onclick="resetForm()">Xóa trắng Form</button>
@@ -151,16 +152,20 @@
                 <div class="form-group" style="grid-column: 1 / -1;"><label>Ghi chú / Vật dụng gửi kèm</label><textarea id="tn_note" rows="2" placeholder="VD: Gói đồ ăn, thuốc men..."></textarea></div>
             </div>
 
-            <button type="submit" class="btn btn-primary">🚀 Tạo Mã QR Vào Cổng</button>
+            <button type="submit" class="btn btn-primary">🚀 TẠO MÃ QR & MÃ XÁC NHẬN VÀO CỔNG</button>
         </form>
 
         <div id="result-box" class="result-box">
-            <h3 style="color: var(--primary); margin: 0 0 4px 0; font-size: 17px;">🎉 ĐÃ TẠO MÃ XÁC NHẬN THÀNH CÔNG!</h3>
-            <p style="font-size: 13px; color: #475569; margin: 0 0 10px 0;">Vui lòng đưa màn hình mã QR này cho đồng chí Trực ban Cổng gác quét.</p>
+            <h3 style="color: var(--primary); margin: 0 0 4px 0; font-size: 18px;">🎉 ĐÃ TẠO PHIẾU ĐĂNG KÝ THÀNH CÔNG!</h3>
+            <p style="font-size: 13px; color: #475569; margin: 0 0 8px 0; font-weight: 600;">Cách 1: Đưa mã QR này cho Trực ban Cổng gác quét:</p>
             <div class="qr-render-area" id="qrcode-output"></div>
-            <div style="font-family: monospace; font-weight: 700; color: #b45309; font-size: 13.5px; margin-top: 8px;" id="serial-output"></div>
-            <div style="margin-top: 14px;">
-                <button type="button" class="btn btn-outline" onclick="navigator.clipboard.writeText(document.getElementById('serial-output').textContent); showToast('📋 Đã copy mã xác nhận!');">📋 Copy Mã Xác Nhận</button>
+            
+            <p style="font-size: 13px; color: #475569; margin: 12px 0 6px 0; font-weight: 600;">Cách 2: Bấm sao chép đoạn mã dài bên dưới gửi qua Zalo cho Trực ban:</p>
+            <textarea id="longcode-textarea" readonly style="width: 100%; height: 75px; font-size: 11px; padding: 8px; border: 1px solid var(--border); border-radius: 6px; background: #fff; font-family: monospace; resize: none; margin-bottom: 12px;"></textarea>
+            
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button type="button" class="btn btn-warning" onclick="copyLongCode()" style="flex: 1;">📋 SAO CHÉP MÃ XÁC NHẬN GỬI TRỰC BAN</button>
+                <button type="button" class="btn btn-outline" onclick="editFormAgain()" style="flex: 1; background: #e2e8f0; border-color: #cbd5e1;">✏️ SỬA LẠI THÔNG TIN</button>
             </div>
         </div>
     </div>
@@ -200,6 +205,13 @@
         toggleOtherInput('tn_rel_select', 'tn_rel_other');
         toggleOtherInput('tn_vehicle_select', 'tn_vehicle_other');
         document.getElementById('result-box').style.display = 'none';
+        document.getElementById('public-reg-form').style.display = 'block';
+    }
+
+    function editFormAgain() {
+        document.getElementById('result-box').style.display = 'none';
+        document.getElementById('public-reg-form').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function generateVisitorQR(e) {
@@ -240,17 +252,30 @@
         qrContainer.innerHTML = '';
         new QRCode(qrContainer, {
             text: longCode,
-            width: 210,
-            height: 210,
+            width: 220,
+            height: 220,
             colorDark: "#1b4332",
             colorLight: "#ffffff",
             correctLevel: QRCode.CorrectLevel.M
         });
 
-        document.getElementById('serial-output').textContent = serial;
+        document.getElementById('longcode-textarea').value = longCode;
+        document.getElementById('public-reg-form').style.display = 'none';
         document.getElementById('result-box').style.display = 'block';
         document.getElementById('result-box').scrollIntoView({ behavior: 'smooth' });
-        showToast("✅ Đã tạo mã QR thành công!");
+        showToast("✅ Đã tạo mã QR & mã xác nhận thành công!");
+    }
+
+    function copyLongCode() {
+        const textarea = document.getElementById('longcode-textarea');
+        textarea.select();
+        textarea.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(textarea.value).then(() => {
+            showToast("📋 Đã sao chép đoạn mã xác nhận gửi Zalo!");
+        }).catch(() => {
+            document.execCommand('copy');
+            showToast("📋 Đã sao chép đoạn mã xác nhận gửi Zalo!");
+        });
     }
 </script>
 </body>
