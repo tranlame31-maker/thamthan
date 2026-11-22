@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng Ký Thăm Thân Điện Tử — Trung Đoàn 31</title>
+    <title>Đăng Ký Thăm Thân Điện Tử — Các Trung Đoàn</title>
     <style>
         :root {
             --primary: #1b4332;
@@ -28,10 +28,10 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         .banner-logo {
-            width: 64px; height: 64px; object-fit: contain; background: rgba(255,255,255,0.15);
-            border-radius: 50%; padding: 4px; margin: 0 auto 8px auto; display: flex;
-            align-items: center; justify-content: center; border: 2px solid #eab308;
+            width: 72px; height: 72px; margin: 0 auto 8px auto; display: flex;
+            align-items: center; justify-content: center;
         }
+        .banner-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
         .top-banner h1 { margin: 0; font-size: 18px; text-transform: uppercase; letter-spacing: 0.5px; }
         .top-banner p { margin: 4px 0 0 0; font-size: 12px; opacity: 0.95; font-weight: 500; }
 
@@ -54,7 +54,7 @@
         .btn-reset { background: #e2e8f0; color: #334155; margin-top: 8px; font-size: 13px; padding: 10px; }
 
         #qr-result-box { display: none; text-align: center; margin-top: 16px; padding: 16px; background: #f0fdf4; border: 2px dashed var(--success); border-radius: 10px; }
-        .serial-badge { font-size: 26px; font-weight: 800; color: #b45309; background: #fef3c7; padding: 10px 20px; border-radius: 8px; display: inline-block; border: 2px dashed #d97706; margin: 8px 0; letter-spacing: 2px; }
+        .serial-badge { font-size: 15px; font-weight: 700; color: #b45309; background: #fef3c7; padding: 10px 14px; border-radius: 8px; display: inline-block; border: 2px dashed #d97706; margin: 8px 0; word-break: break-all; }
         
         #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 10px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; display: none; z-index: 1000; width: 90%; max-width: 380px; text-align: center; }
     </style>
@@ -63,10 +63,10 @@
 
 <div class="top-banner">
     <div class="banner-logo">
-        <img src="logo.png" alt="Logo" style="width:52px; height:52px; object-fit:contain;" onerror="this.style.display='none';">
+        <img src="logo.png" alt="Logo" onerror="this.style.display='none';">
     </div>
     <h1>ĐĂNG KÝ THĂM THÂN ĐIỆN TỬ</h1>
-    <p>Trung đoàn 31 — Khai báo thông tin & Tạo mã xác nhận vào cổng</p>
+    <p>Khai báo thông tin & Tạo mã xác nhận vào cổng</p>
 </div>
 
 <div class="container">
@@ -91,6 +91,9 @@
                     <option value="Hạ sĩ">Hạ sĩ</option>
                     <option value="Trung sĩ">Trung sĩ</option>
                     <option value="Thượng sĩ">Thượng sĩ</option>
+                    <option value="Thiếu úy">Thiếu úy</option>
+                    <option value="Trung úy">Trung úy</option>
+                    <option value="Thượng úy">Thượng úy</option>
                     <option value="Khác">Khác</option>
                 </select>
             </div>
@@ -112,7 +115,14 @@
                 <div class="form-group"><label>Đại đội (c)</label><input type="text" id="reg_qn_c" placeholder="VD: Đại đội 1"></div>
                 <div class="form-group"><label>Tiểu đoàn (d)</label><input type="text" id="reg_qn_d" placeholder="VD: Tiểu đoàn 8"></div>
             </div>
-            <div class="form-group"><label>Trung đoàn (e)</label><input type="text" id="reg_qn_e" value="Trung đoàn 31" readonly style="background:#e2e8f0; font-weight:700;"></div>
+            <div class="form-group">
+                <label>Trung đoàn (e) <span class="req">*</span></label>
+                <select id="reg_qn_e" required>
+                    <option value="Trung đoàn 31" selected>Trung đoàn 31</option>
+                    <option value="Trung đoàn 96">Trung đoàn 96</option>
+                    <option value="Trung đoàn 250">Trung đoàn 250</option>
+                </select>
+            </div>
 
             <div class="section-title">B. Thông tin thân nhân đến thăm</div>
             <div class="form-group"><label>Họ và tên Thân nhân đại diện <span class="req">*</span></label><input type="text" id="reg_tn_name" required placeholder="VD: Nguyễn Thị Hạnh"></div>
@@ -151,9 +161,9 @@
             <div style="background:white; padding:10px; border:2px dashed #059669; border-radius:8px; display:inline-block; margin:8px 0;">
                 <canvas id="visitor-qr-canvas" width="200" height="200"></canvas>
             </div>
-            <div style="font-size:12.5px; color:#475569; margin-top:6px; font-weight:600;">Cách 2: Đọc hoặc gửi mã ngắn này cho Trực ban:</div>
-            <div id="serial-display-box" class="serial-badge">KT-88</div>
-            <div><button type="button" class="btn btn-copy" onclick="copySerialCode()">📋 SAO CHÉP MÃ GỬI TRỰC BAN</button></div>
+            <div style="font-size:12.5px; color:#475569; margin-top:6px; font-weight:600;">Cách 2: Đọc mã phiếu dài đầy đủ cho Trực ban:</div>
+            <div id="serial-display-box" class="serial-badge"></div>
+            <div><button type="button" class="btn btn-copy" onclick="copySerialCode()">📋 SAO CHÉP MÃ PHIẾU</button></div>
             <button type="button" class="btn btn-reset" onclick="editFormAgain()">✏️ Sửa lại thông tin</button>
         </div>
     </div>
@@ -171,13 +181,10 @@
 
     function generateRegistration(e) {
         e.preventDefault();
-        // Tạo mã ngắn gọn từ 5-6 ký tự (Ví dụ: K31-92, A74, v.v.)
-        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-        let shortCode = 'K';
-        for(let i=0; i<4; i++) { shortCode += chars.charAt(Math.floor(Math.random() * chars.length)); }
+        const fullSerial = 'E31-' + Math.random().toString(36).substring(2, 8).toUpperCase() + '-' + Date.now().toString().slice(-6);
         
         const payload = {
-            serial: shortCode,
+            serial: fullSerial,
             qn_name: document.getElementById('reg_qn_name').value.trim(),
             qn_rank: document.getElementById('reg_qn_rank').value,
             qn_pos: document.getElementById('reg_qn_pos').value,
@@ -185,7 +192,7 @@
             qn_b: document.getElementById('reg_qn_b').value.trim(),
             qn_c: document.getElementById('reg_qn_c').value.trim(),
             qn_d: document.getElementById('reg_qn_d').value.trim(),
-            qn_e: 'Trung đoàn 31',
+            qn_e: document.getElementById('reg_qn_e').value,
             tn_name: document.getElementById('reg_tn_name').value.trim(),
             tn_cccd: document.getElementById('reg_tn_cccd').value.trim(),
             tn_rel: document.getElementById('reg_tn_rel').value,
@@ -203,7 +210,7 @@
         if (cloudRecords.length > 200) cloudRecords.pop();
         localStorage.setItem('E31_SHARED_REG_RECORDS', JSON.stringify(cloudRecords));
 
-        document.getElementById('serial-display-box').textContent = shortCode;
+        document.getElementById('serial-display-box').textContent = fullSerial;
         document.getElementById('qr-result-box').style.display = 'block';
 
         const canvas = document.getElementById('visitor-qr-canvas');
@@ -215,15 +222,15 @@
             ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         };
-        img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=6&data=${encodeURIComponent(shortCode)}`;
+        img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=6&data=${encodeURIComponent(fullSerial)}`;
 
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-        showToast("✅ Đã tạo mã xác nhận thành công!");
+        showToast("✅ Đã tạo mã phiếu thành công!");
     }
 
     function copySerialCode() {
         const serialText = document.getElementById('serial-display-box').textContent;
-        navigator.clipboard.writeText(serialText).then(() => { showToast("📋 Đã sao chép mã: " + serialText); });
+        navigator.clipboard.writeText(serialText).then(() => { showToast("📋 Đã sao chép mã phiếu!"); });
     }
     function editFormAgain() {
         document.getElementById('qr-result-box').style.display = 'none';
