@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng Ký Thăm Thân Điện Tử — Các Trung Đoàn</title>
-    <!-- Thư viện QRCode.js chạy offline 100% không cần mạng -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root {
@@ -23,11 +22,7 @@
         
         .top-banner {
             background: linear-gradient(135deg, rgba(27, 67, 50, 0.95), rgba(45, 106, 79, 0.95)), url('bg.jpg') center/cover no-repeat;
-            color: white;
-            text-align: center;
-            padding: 22px 16px;
-            border-bottom: 4px solid #eab308;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            color: white; text-align: center; padding: 22px 16px; border-bottom: 4px solid #eab308; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         .banner-logo {
             width: 72px; height: 72px; margin: 0 auto 8px auto; display: flex;
@@ -56,7 +51,7 @@
         .btn-reset { background: #e2e8f0; color: #334155; margin-top: 8px; font-size: 13px; padding: 10px; }
 
         #qr-result-box { display: none; text-align: center; margin-top: 16px; padding: 16px; background: #f0fdf4; border: 2px dashed var(--success); border-radius: 10px; }
-        .serial-badge { font-size: 14px; font-weight: 700; color: #b45309; background: #fef3c7; padding: 10px 14px; border-radius: 8px; display: inline-block; border: 2px dashed #d97706; margin: 8px 0; word-break: break-all; }
+        .serial-badge { font-size: 13px; font-weight: 700; color: #b45309; background: #fef3c7; padding: 10px 14px; border-radius: 8px; display: inline-block; border: 2px dashed #d97706; margin: 8px 0; word-break: break-all; }
         
         #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 10px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; display: none; z-index: 1000; width: 90%; max-width: 380px; text-align: center; }
     </style>
@@ -159,9 +154,7 @@
 
         <div id="qr-result-box">
             <div style="font-size:15px; font-weight:700; color:var(--success);">🎉 ĐÃ TẠO PHIẾU ĐĂNG KÝ THÀNH CÔNG!</div>
-            <div style="font-size:12.5px; color:#475569; margin-top:4px;">Cách 1: Đưa mã QR cho Trực ban quét:</div>
-            <div id="visitor-qrcode-container" style="background:white; padding:10px; border:2px dashed #059669; border-radius:8px; display:inline-block; margin:8px 0;"></div>
-            <div style="font-size:12.5px; color:#475569; margin-top:6px; font-weight:600;">Cách 2: Đọc mã phiếu dài đầy đủ cho Trực ban:</div>
+            <div style="margin: 10px 0;"><div id="visitor-qrcode-container" style="background:white; padding:10px; border:2px dashed #059669; border-radius:8px; display:inline-block;"></div></div>
             <div id="serial-display-box" class="serial-badge"></div>
             <div><button type="button" class="btn btn-copy" onclick="copySerialCode()">📋 SAO CHÉP MÃ PHIẾU</button></div>
             <button type="button" class="btn btn-reset" onclick="editFormAgain()">✏️ Sửa lại thông tin</button>
@@ -213,11 +206,11 @@
         document.getElementById('serial-display-box').textContent = fullSerial;
         document.getElementById('qr-result-box').style.display = 'block';
 
-        // Tạo mã QR bằng QRCode.js (Chạy offline 100%, không cần gọi mạng)
+        // Tạo mã QR chứa toàn bộ dữ liệu gói gọn
         const qrContainer = document.getElementById('visitor-qrcode-container');
         qrContainer.innerHTML = '';
         new QRCode(qrContainer, {
-            text: fullSerial,
+            text: JSON.stringify(payload),
             width: 190,
             height: 190,
             colorDark: "#000000",
